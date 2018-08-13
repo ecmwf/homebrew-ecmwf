@@ -5,9 +5,8 @@ class Eckit < Formula
   sha256 "18cde98d62629a78355c40dfa52d69972c85b409fa482ac4efc4e383ebcd18f0"
 
   # bottle do
-  #   sha256 "f7e078f54c455461daf8fc9380f464eef78fd47349304312c5705a21f5136fef" => :high_sierra
-  #   sha256 "6f52dde3cc19cf888118734f53d568fccb0fa6c6e5e71fff60974ebc4a667e5b" => :sierra
-  #   sha256 "0eae38514c8ebed471f33c6d8824d2272ebf41ebd76092d35d9938fbacbca61c" => :el_capitan
+  #   cellar :any
+  #   sha256 "397a555e36bdad548c7121c3962d518dc304dc9d033fcf67c4ee4428a460285a" => :high_sierra
   # end
 
   depends_on "cmake" => :build
