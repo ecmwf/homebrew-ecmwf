@@ -16,6 +16,6 @@ class Atlas < Formula
   end
 
   test do
-    assert_match "0.15.1", shell_output("#{bin}/eckit-version").strip
+    assert_match "0.15.1", shell_output("#{bin}/atlas --version").strip
   end
 end
