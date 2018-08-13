@@ -1,4 +1,4 @@
-class Ecckit < Formula
+class Eckit < Formula
   desc "ECMWF cross-platform c++ toolkit"
   homepage "https://github.com/ecmwf/eckit"
   url "https://github.com/ecmwf/eckit/releases/download/0.22.0/eckit-0.22.0-Source.tar.gz"
