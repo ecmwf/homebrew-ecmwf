@@ -11,10 +11,6 @@ class Eckit < Formula
   # end
 
   depends_on "cmake" => :build
-  depends_on "flex" => :build
-  depends_on "bison" => :build
-  depends_on "perl" => :build
-  depends_on "ncurses"
   depends_on "eigen" => :optional
   depends_on "armadillo" => :optional
 
