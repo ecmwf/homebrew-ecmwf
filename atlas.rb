@@ -7,10 +7,11 @@ class Atlas < Formula
   depends_on "cmake" => :build
   depends_on "ecbuild" => :build
   depends_on "eckit"
+  # depends_on "eigen" => :recommended # currently fails to build -- internactive make works, non-interactive fails
 
   def install
     mkdir "build" do
-      system "ecbuild", "..", "-DENABLE_FORTRAN=OFF", *std_cmake_args
+      system "ecbuild", "..", "-DENABLE_FORTRAN=OFF", "-DENABLE_EIGEN=OFF", *std_cmake_args
       system "make", "install"
     end
   end
