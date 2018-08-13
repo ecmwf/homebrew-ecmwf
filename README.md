@@ -11,4 +11,6 @@ Usage
 Packages
 --------
 
+* ecbuild
 * eckit
+* atlas
