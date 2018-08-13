@@ -17,7 +17,7 @@ class Eckit < Formula
 
   def install
     mkdir "build" do
-      system "cmake", "..", "-DENABLE_MPI=OFF -DENABLE_EIGEN=OFF", *std_cmake_args
+      system "cmake", "..", "-DENABLE_MPI=OFF", "-DENABLE_EIGEN=OFF", *std_cmake_args
       system "make", "install"
     end
   end
