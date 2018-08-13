@@ -1,12 +1,12 @@
 # homebrew-ecmwf
-Homebrew packages for ECMWF software
+Homebrew packages of ECMWF software
 
 Usage
 -----
 
 > brew tap ecmwf/homebrew-ecmwf
 
-> brew install <package>
+> brew install package
 
 Packages
 --------
