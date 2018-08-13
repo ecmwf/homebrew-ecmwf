@@ -11,12 +11,13 @@ class Eckit < Formula
   # end
 
   depends_on "cmake" => :build
-  depends_on "eigen" => :optional
+  # depends_on "eigen" => :recommended # currently fails to build -- internactive make works, non-interactive fails
   depends_on "armadillo" => :optional
+  depends_on "viennacl" => :optional
 
   def install
     mkdir "build" do
-      system "cmake", "..", "-DENABLE_MPI=OFF", *std_cmake_args
+      system "cmake", "..", "-DENABLE_MPI=OFF -DENABLE_EIGEN=OFF", *std_cmake_args
       system "make", "install"
     end
   end
