@@ -26,6 +26,6 @@ class Ecckit < Formula
   end
 
   test do
-    assert_match "0.22.0", shell_output("#{bin}/eckit-version").strip)
+    assert_match "0.22.0", shell_output("#{bin}/eckit-version").strip
   end
 end
