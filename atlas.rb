@@ -1,8 +1,8 @@
 class Atlas < Formula
   desc "ECMWF library for parallel data-structures supporting unstructured grids and function spaces"
   homepage "https://github.com/ecmwf/atlas"
-  url "https://github.com/ecmwf/atlas/archive/0.15.1.tar.gz"
-  sha256 "24fea5e06072a77974947ca6062e61a6fa127f8aab9cc1a9b51beae0c4ab5ee0"
+  url "https://github.com/ecmwf/atlas/archive/0.15.2.tar.gz"
+  sha256 "8c53843be4a14111497e154087810a2a0c4a0d9941c1e3d4dd2e9189f21f4f95"
 
   depends_on "cmake" => :build
   depends_on "ecbuild" => :build
@@ -17,6 +17,6 @@ class Atlas < Formula
   end
 
   test do
-    assert_match "0.15.1", shell_output("#{bin}/atlas --version").strip
+    assert_match "0.15.2", shell_output("#{bin}/atlas --version").strip
   end
 end
