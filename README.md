@@ -18,3 +18,4 @@ brew install <formula>
 - ecbuild
 - eckit
 - atlas
+- odc
