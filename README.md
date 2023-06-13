@@ -1,16 +1,20 @@
 # homebrew-ecmwf
+
 Homebrew packages of ECMWF software
 
-Usage
------
+## Usage
 
-> brew tap ecmwf/homebrew-ecmwf
+`brew install ecmwf/ecmwf/<formula>`
 
-> brew install package
+Or
 
-Packages
---------
+```
+brew tap ecmwf/ecmwf
+brew install <formula>
+```
 
-* ecbuild
-* eckit
-* atlas
+## Packages
+
+- ecbuild
+- eckit
+- atlas
