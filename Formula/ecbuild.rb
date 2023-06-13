@@ -1,8 +1,8 @@
 class Ecbuild < Formula
   desc "ECMWF macros for CMake build system"
   homepage "https://github.com/ecmwf/ecbuild"
-  url "https://github.com/ecmwf/ecbuild/archive/2.9.0.tar.gz"
-  sha256 "91210944e8f71c24bb45b4d58766d2203837036cec0981c51a8dc60943553adb"
+  url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz"
+  sha256 "7a2d192cef1e53dc5431a688b2e316251b017d25808190faed485903594a3fb9"
 
   depends_on "cmake" => :build
 
@@ -14,6 +14,6 @@ class Ecbuild < Formula
   end
 
   test do
-    assert_match "ecbuild version 2.9.0", shell_output("#{bin}/ecbuild --version | grep ecbuild").strip
+    assert_match "ecbuild version #{version}", shell_output("#{bin}/ecbuild --version | grep ecbuild").strip
   end
 end
