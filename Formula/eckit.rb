@@ -7,7 +7,7 @@ class Eckit < Formula
 
   livecheck do
     url "https://github.com/ecmwf/eckit/tags"
-    regex(/^v?(\\d(?:\\.\\d+)+)$/i)
+    regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
   depends_on "cmake" => :build

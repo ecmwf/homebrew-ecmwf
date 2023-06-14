@@ -4,6 +4,11 @@ class Ecbuild < Formula
   url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz"
   sha256 "7a2d192cef1e53dc5431a688b2e316251b017d25808190faed485903594a3fb9"
 
+  livecheck do
+    url "https://github.com/ecmwf/ecbuild/tags"
+    regex(/^v?(\d(?:\.\d+)+)$/i)
+  end
+
   depends_on "cmake" => :build
 
   def install
