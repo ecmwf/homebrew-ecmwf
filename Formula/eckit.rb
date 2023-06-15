@@ -10,11 +10,15 @@ class Eckit < Formula
     regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
-  depends_on "cmake" => :build
-  depends_on "ecbuild" => :build
+  depends_on "cmake" => [:build, :test]
+  depends_on "ecbuild" => [:build, :test]
+  depends_on "lapack"
+  depends_on "lz4"
+  depends_on "openblas"
   depends_on "eigen" => :recommended
-  depends_on "armadillo" => :optional
-  depends_on "viennacl" => :optional
+  uses_from_macos "bzip2"
+  uses_from_macos "ncurses"
+  uses_from_macos "openssl"
 
   def install
     mkdir "build" do
