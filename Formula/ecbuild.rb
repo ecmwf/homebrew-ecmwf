@@ -3,6 +3,7 @@ class Ecbuild < Formula
   homepage "https://github.com/ecmwf/ecbuild"
   url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz"
   sha256 "7a2d192cef1e53dc5431a688b2e316251b017d25808190faed485903594a3fb9"
+  license "Apache-2.0"
 
   livecheck do
     url "https://github.com/ecmwf/ecbuild/tags"
@@ -19,6 +20,30 @@ class Ecbuild < Formula
   end
 
   test do
-    assert_match "ecbuild version #{version}", shell_output("#{bin}/ecbuild --version | grep ecbuild").strip
+    assert_match version.to_s, shell_output("#{bin}/ecbuild --version")
+
+    # create a small sample CMake project that uses ecbuild features
+    (testpath/"src/CMakeLists.txt").write <<~EOS
+      cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
+      find_package(ecbuild REQUIRED)
+      project(test_ecbuild_install VERSION 0.1.0 LANGUAGES NONE)
+      ecbuild_add_option(FEATURE TEST_A DEFAULT OFF)
+      if(HAVE_TEST_A)
+        message(STATUS "TEST_A ON")
+      else()
+        message(STATUS "TEST_A OFF")
+      endif()
+    EOS
+
+    default_output = shell_output("#{bin}/ecbuild -Wno-dev ./src")
+    assert_match "TEST_A OFF", default_output
+    rm "CMakeCache.txt"
+
+    on_output = shell_output("#{bin}/ecbuild -Wno-dev ./src -DENABLE_TEST_A=ON")
+    assert_match "TEST_A ON", on_output
+    rm "CMakeCache.txt"
+
+    off_output = shell_output("#{bin}/ecbuild -Wno-dev ./src -DENABLE_TEST_A=OFF")
+    assert_match "TEST_A OFF", off_output
   end
 end
