@@ -3,6 +3,7 @@ class Atlas < Formula
   homepage "https://github.com/ecmwf/atlas"
   url "https://github.com/ecmwf/atlas/archive/refs/tags/0.33.0.tar.gz"
   sha256 "a91fffe9cecb51c6ee8549cbc20f8279e7b1f67dd90448e6c04c1889281b0600"
+  license "Apache-2.0"
 
   depends_on "cmake" => :build
   depends_on "ecbuild" => :build
