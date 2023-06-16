@@ -10,6 +10,12 @@ class Odc < Formula
     regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/odc-1.4.6"
+    sha256 ventura:      "f6134c9243059cedc566b4d7d0f6262a81fb4a8f2e66b2a2d115fa4e75bdf657"
+    sha256 x86_64_linux: "a82433834fa7297b69106c37343c1f0b56f51f373e2215de7c80cc223e60228d"
+  end
+
   depends_on "cmake" => :build
   depends_on "ecbuild" => :build
   depends_on "eckit"
