@@ -10,6 +10,12 @@ class Ecbuild < Formula
     regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/ecbuild-3.7.2"
+    sha256 cellar: :any_skip_relocation, ventura:      "d8d7e1f8ec422ea245daf63cac022e9d5fff3840c3a55cdefc7de2d81f150ebf"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "bc6621b466d10840febd80dfa5dd32acf40808200bc54d32a9d27330721038bb"
+  end
+
   depends_on "cmake"
 
   def install
