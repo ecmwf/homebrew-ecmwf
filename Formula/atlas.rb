@@ -5,6 +5,11 @@ class Atlas < Formula
   sha256 "a91fffe9cecb51c6ee8549cbc20f8279e7b1f67dd90448e6c04c1889281b0600"
   license "Apache-2.0"
 
+  bottle do
+    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/atlas-0.33.0"
+    sha256 cellar: :any, ventura: "8ccaa9ee43fc9d8db334fd74f0db8c3a4c27c7df006161876967ba1bf476ce5e"
+  end
+
   depends_on "cmake" => :build
   depends_on "ecbuild" => :build
   depends_on "eckit"
