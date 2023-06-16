@@ -31,6 +31,6 @@ class Atlas < Formula
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/atlas --version").strip
+    assert_match version.to_s, shell_output("#{bin}/atlas --version")
   end
 end
