@@ -7,7 +7,8 @@ class Atlas < Formula
 
   bottle do
     root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/atlas-0.33.0"
-    sha256 cellar: :any, ventura: "8ccaa9ee43fc9d8db334fd74f0db8c3a4c27c7df006161876967ba1bf476ce5e"
+    rebuild 1
+    sha256 cellar: :any, ventura: "5c4866d6bd82c04168c404709452822a0c3aa842b3acc522586ec43fb4989001"
   end
 
   depends_on "cmake" => :build
