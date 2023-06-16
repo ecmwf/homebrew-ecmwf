@@ -1,8 +1,8 @@
 class Eckit < Formula
   desc "ECMWF cross-platform c++ toolkit"
   homepage "https://github.com/ecmwf/eckit"
-  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.23.1.tar.gz"
-  sha256 "cd3c4b7a3a2de0f4a59f00f7bab3178dd59c0e27900d48eaeb357975e8ce2f15"
+  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.24.1.tar.gz"
+  sha256 "e87114995f43b34230e5a369384bd9a12b905cdf9d91d2c6898a6a0387029e99"
   license "Apache-2.0"
 
   livecheck do
