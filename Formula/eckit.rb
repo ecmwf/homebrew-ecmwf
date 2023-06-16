@@ -10,6 +10,12 @@ class Eckit < Formula
     regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/eckit-1.23.1"
+    sha256 cellar: :any,                 ventura:      "3d482636106b0861c828c68bd968a2cc2402ac5c3c8626283f1259156856e754"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "2c0e77a4a0a0c190eb03fafbbe83d4ab0928bd40539ff4a049ac614c92dbe673"
+  end
+
   depends_on "cmake" => [:build, :test]
   depends_on "ecbuild" => [:build, :test]
   depends_on "lapack"
