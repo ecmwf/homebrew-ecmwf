@@ -8,8 +8,18 @@ jobs:
   test-bot:
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-13]
-    runs-on: ${{ matrix.os }}
+        name:
+          - ubuntu-latest
+          - macos-13-arm
+          - macos-13-x86
+        include:
+          - name: ubuntu-latest
+            labels: [ubuntu-latest]
+          - name: macos-13-arm
+            labels: [self-hosted, platform-builder-macosx-13.4.1-arm64]
+          - name: macos-13-x86
+            labels: [self-hosted, platform-builder-macosx-13.4.1-x86_64]
+    runs-on: ${{ matrix.labels }}
     env:
       HOMEBREW_NO_INSTALL_FROM_API: 1
     steps:
@@ -29,13 +39,17 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install-bundler-gems
 
-      - run: brew test-bot --only-cleanup-before
+      - name: Run homebrew cleanup
+        run: brew test-bot --only-cleanup-before
 
-      - run: brew test-bot --only-setup
+      - name: Run the local system setup check
+        run: brew test-bot --only-setup
 
-      - run: brew test-bot --only-tap-syntax
+      - name: Run syntax check
+        run: brew test-bot --only-tap-syntax
 
-      - if: github.event_name == 'pull_request'
+      - name: Build bottles
+        if: github.event_name == 'pull_request'
         run: brew test-bot --only-formulae --fail-fast --skip-recursive-dependents
 
       - name: Upload bottles as artifact
