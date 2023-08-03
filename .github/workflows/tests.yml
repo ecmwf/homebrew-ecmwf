@@ -42,17 +42,38 @@ jobs:
         run: brew install-bundler-gems
 
       - name: Run homebrew cleanup
-        run: brew test-bot --only-cleanup-before
+        run: |
+          if ${{ contains(matrix.labels, 'self-hosted') }}; then
+            chmod -R g+w .
+            sudo --user=administrator bash -c 'brew test-bot --only-cleanup-before'
+          else
+            brew test-bot --only-cleanup-before
+          fi
 
       - name: Run the local system setup check
-        run: brew test-bot --only-setup
+        run: |
+          if ${{ contains(matrix.labels, 'self-hosted') }}; then
+            sudo --user=administrator bash -c 'brew test-bot --only-setup'
+          else
+            brew test-bot --only-setup
+          fi
 
       - name: Run syntax check
-        run: brew test-bot --only-tap-syntax
+        run: |
+          if ${{ contains(matrix.labels, 'self-hosted') }}; then
+            sudo --user=administrator bash -c 'brew test-bot --only-tap-syntax'
+          else
+            brew test-bot --only-tap-syntax
+          fi
 
       - name: Build bottles
         if: github.event_name == 'pull_request'
-        run: brew test-bot --only-formulae --fail-fast --skip-recursive-dependents
+        run: |
+          if ${{ contains(matrix.labels, 'self-hosted') }}; then
+            sudo --user=administrator bash -c 'brew test-bot --only-formulae --fail-fast --skip-recursive-dependents'
+          else
+            brew test-bot --only-formulae --fail-fast --skip-recursive-dependents
+          fi
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
