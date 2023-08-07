@@ -23,11 +23,20 @@ jobs:
     env:
       HOMEBREW_NO_INSTALL_FROM_API: 1
     steps:
+      - name: Checkout current branch
+        if: ${{ contains(matrix.labels, 'self-hosted') }}
+        run: |
+          cd $(brew --repository ecmwf/ecmwf)
+          git pull
+          git checkout ${{ github.ref_name }}
+
       - name: Set up Homebrew
+        if: ${{ !contains(matrix.labels, 'self-hosted') }}
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Cache Homebrew Bundler RubyGems
+        if: ${{ !contains(matrix.labels, 'self-hosted') }}
         id: cache
         uses: actions/cache@v3
         with:
@@ -36,10 +45,11 @@ jobs:
           restore-keys: ${{ runner.os }}-rubygems-
 
       - name: Install Homebrew Bundler RubyGems
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: ${{ !contains(matrix.labels, 'self-hosted') && steps.cache.outputs.cache-hit != 'true' }}
         run: brew install-bundler-gems
 
       - name: Run homebrew cleanup
+        if: ${{ !contains(matrix.labels, 'self-hosted') }}
         run: brew test-bot --only-cleanup-before
 
       - name: Run the local system setup check
