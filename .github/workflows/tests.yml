@@ -6,6 +6,7 @@ on:
   pull_request:
 jobs:
   test-bot:
+    if: ${{ github.triggering_actor != 'github-actions[bot]' }}
     strategy:
       matrix:
         name:
