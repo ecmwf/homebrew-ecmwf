@@ -5,6 +5,8 @@ on:
       - labeled
 jobs:
   pr-pull:
+    permissions:
+      contents: write
     if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
     runs-on: ubuntu-22.04
     env:
@@ -13,6 +15,8 @@ jobs:
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
+        with:
+          token: ${{ github.token }}
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
@@ -28,6 +32,9 @@ jobs:
 
       - name: Set up git
         uses: Homebrew/actions/git-user-config@master
+
+      - name: Checkout PR branch
+        run: git checkout ${{ github.head_ref }}
 
       - name: Pull bottles from artifacts
         shell: python
@@ -88,8 +95,5 @@ jobs:
       - name: Apply bottle commit
         run: brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew *.json
 
-      - name: Push commits
-        uses: Homebrew/actions/git-try-push@master
-        with:
-          token: ${{ github.token }}
-          branch: ${{ github.head_ref }}
+      - name: Push bottle commit
+        run: git push origin ${{ github.head_ref }}
