@@ -27,8 +27,8 @@ jobs:
         if: ${{ contains(matrix.labels, 'self-hosted') }}
         run: |
           cd $(brew --repository ecmwf/ecmwf)
-          git pull
-          git checkout ${{ github.ref_name }}
+          git fetch origin ${{ github.sha }} 
+          git checkout FETCH_HEAD
 
       - name: Set up Homebrew
         if: ${{ !contains(matrix.labels, 'self-hosted') }}
