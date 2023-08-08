@@ -23,6 +23,10 @@ jobs:
     env:
       HOMEBREW_NO_INSTALL_FROM_API: 1
     steps:
+      - name: Cleanup working directory
+        if: ${{ contains(matrix.labels, 'self-hosted') }}
+        run: rm -rf $GITHUB_WORKSPACE/*
+
       - name: Checkout current branch
         if: ${{ contains(matrix.labels, 'self-hosted') }}
         run: |
