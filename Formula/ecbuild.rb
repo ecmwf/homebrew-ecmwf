@@ -11,9 +11,10 @@ class Ecbuild < Formula
   end
 
   bottle do
-    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/ecbuild-3.7.2"
-    sha256 cellar: :any_skip_relocation, ventura:      "d8d7e1f8ec422ea245daf63cac022e9d5fff3840c3a55cdefc7de2d81f150ebf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "bc6621b466d10840febd80dfa5dd32acf40808200bc54d32a9d27330721038bb"
+    root_url "https://get-test.ecmwf.int/repository/homebrew"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "1ac3298fff255d4428cd0e315603bf10b1f856a6f264f643843158d329fe6882"
+    sha256 cellar: :any_skip_relocation, ventura:       "4d647030395ba5817b2be8918e4726792a478e926c8052e76ff6f3b059817ce9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d63291bcf24bcaaa4407c027485a1e9553b9d9ab45873ad1fba7c46a3a485d2a"
   end
 
   depends_on "cmake"
