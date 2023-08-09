@@ -43,6 +43,7 @@ class Eckit < Formula
       lib/"pkgconfig/eckit.pc",
       lib/"pkgconfig/eckit_linalg.pc",
       lib/"pkgconfig/eckit_geometry.pc",
+      lib/"pkgconfig/eckit_distributed.pc",
       include/"eckit/eckit_ecbuild_config.h",
     ]
     inreplace shim_references, Superenv.shims_path/ENV.cxx, ENV.cxx
