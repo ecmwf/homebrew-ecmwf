@@ -97,3 +97,20 @@ jobs:
 
       - name: Push bottle commit
         run: git push origin ${{ github.head_ref }}
+
+      - name: Upload bottles
+        run: |
+          for file in *.bottle.tar.gz; do
+            if [ -f "$file" ]; then
+              echo "Uploading: $file"
+              response=$(curl -w "%{http_code}" --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" --upload-file $file https://get-test.ecmwf.int/repository/homebrew/$file)
+              
+              status=$(echo $response | tail -c 4)
+              if [ $status -eq 201 ] || [ $status -eq 200 ]; then
+                echo "Successfully uploaded!"
+              else
+                echo "$status: Upload failed"
+                exit 1
+              fi
+            fi
+          done
