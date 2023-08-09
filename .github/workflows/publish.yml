@@ -98,6 +98,28 @@ jobs:
       - name: Push bottle commit
         run: git push origin ${{ github.head_ref }}
 
+        # brew creates bottles with a different name than what should be uploaded
+        # when installing it's searching for file with the new name
+      - name: Rename bottles
+        shell: python
+        run: |
+          import os
+          import json
+
+          def rename(data):
+            key1 = next(iter(data))
+            key2 = next(iter(data[key1]["bottle"]["tags"]))
+            obj = data[key1]["bottle"]["tags"][key2]
+            filename = obj["filename"]
+            local_filename = obj["local_filename"]
+            os.rename(local_filename, filename)
+
+          for filename in os.listdir("."):
+            if filename.endswith(".json"):
+              with open(filename, "r") as json_file:
+                data = json.load(json_file)
+                rename(data)
+
       - name: Upload bottles
         run: |
           for file in *.bottle.tar.gz; do
