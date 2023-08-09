@@ -1,8 +1,8 @@
 class Ecbuild < Formula
   desc "ECMWF macros for CMake build system"
   homepage "https://github.com/ecmwf/ecbuild"
-  url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz"
-  sha256 "7a2d192cef1e53dc5431a688b2e316251b017d25808190faed485903594a3fb9"
+  url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.8.0.tar.gz"
+  sha256 "6fba30dae40a09ad0f14e16769e5df2b038024df8bbaca55adaddbb7fce49579"
   license "Apache-2.0"
 
   livecheck do
