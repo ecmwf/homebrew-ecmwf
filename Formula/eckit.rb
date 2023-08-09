@@ -1,8 +1,8 @@
 class Eckit < Formula
   desc "ECMWF cross-platform c++ toolkit"
   homepage "https://github.com/ecmwf/eckit"
-  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.24.1.tar.gz"
-  sha256 "e87114995f43b34230e5a369384bd9a12b905cdf9d91d2c6898a6a0387029e99"
+  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.24.2.tar.gz"
+  sha256 "5b774710a9ab131d9ebec9de619e90b2c34ab047b3c021d8eac00bfe882407bd"
   license "Apache-2.0"
 
   livecheck do
@@ -11,9 +11,9 @@ class Eckit < Formula
   end
 
   bottle do
-    root_url "https://github.com/ecmwf/homebrew-ecmwf/releases/download/eckit-1.24.1"
-    sha256 cellar: :any,                 ventura:      "706198cf30139e6e407d0424d9fbe35ae5630626e861ab45341c354f1c563456"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "434a71ca38a8d87518e48f1ef44e22999c60c80a20745e3df2d243d1cf8dcd29"
+    root_url "https://get-test.ecmwf.int/repository/homebrew"
+    sha256 cellar: :any,                 ventura:      "fba25cfdd67a8b98adbade6d15c4a8ed0ae60281335391e2c6935ec620256e60"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "05c557acbabc30bb32456eebba2b32fe5c90eaaa94fcd537306c1cc80ccbcfe9"
   end
 
   depends_on "cmake" => [:build, :test]
