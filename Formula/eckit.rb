@@ -34,6 +34,7 @@ class Eckit < Formula
     end
 
     shim_references = [
+      lib/"pkgconfig/eckit_codec.pc",
       lib/"pkgconfig/eckit_mpi.pc",
       lib/"pkgconfig/eckit_cmd.pc",
       lib/"pkgconfig/eckit_test_value_custom_params.pc",
