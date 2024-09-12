@@ -1,8 +1,8 @@
 class Atlas < Formula
   desc "ECMWF library for numerical weather prediction and climate modelling"
   homepage "https://github.com/ecmwf/atlas"
-  url "https://github.com/ecmwf/atlas/archive/refs/tags/0.33.0.tar.gz"
-  sha256 "a91fffe9cecb51c6ee8549cbc20f8279e7b1f67dd90448e6c04c1889281b0600"
+  url "https://github.com/ecmwf/atlas/archive/refs/tags/0.34.0.tar.gz"
+  sha256 "48536742cec0bc268695240843ac0e232e2b5142d06b19365688d9ea44dbd9ba"
   license "Apache-2.0"
 
   bottle do
