@@ -36,64 +36,18 @@ jobs:
       - name: Checkout PR branch
         run: git checkout ${{ github.head_ref }}
 
-      - name: Pull bottles from artifacts
-        shell: python
+      - name: Pull bottles
+        id: pr-pull
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
+        run: brew pr-pull --debug --no-upload --retain-bottle-dir --root-url=https://get-test.ecmwf.int/repository/homebrew --tap=$GITHUB_REPOSITORY $PULL_REQUEST
+
+      - name: Unzip artifacts and apply bottle commit
         run: |
-          import requests
-
-          ACCESS_TOKEN = '${{ github.token }}'
-          owner = 'ecmwf'
-          repo = 'homebrew-ecmwf'
-          pull_request_number = '${{ github.event.pull_request.number }}'
-          branch_name = '${{ github.head_ref }}'
-          workflow_file = 'tests.yml'
-
-          # Get the latest workflow run for the pull request
-          url = f'https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_file}/runs'
-          params = {
-              'event': 'pull_request',
-              'branch': branch_name,
-              'status': 'completed',
-              'per_page': 1
-          }
-          headers = {
-              'Authorization': f'Bearer {ACCESS_TOKEN}',
-              'Accept': 'application/vnd.github.v3+json'
-          }
-
-          response = requests.get(url, params=params, headers=headers)
-          response_data = response.json()
-
-          if not response_data['workflow_runs']:
-              print("No completed workflow runs found.")
-          else:
-              artifacts_url = response_data['workflow_runs'][0]['artifacts_url']
-              artifacts_response = requests.get(artifacts_url, headers=headers)
-              artifacts_data = artifacts_response.json()
-
-              artifact_download_url = None
-              for artifact in artifacts_data['artifacts']:
-                  if artifact['name'] == 'bottles':
-                      artifact_download_url = artifact['archive_download_url']
-
-              if artifact_download_url:
-                  print(f"Downloading artifact from: {artifact_download_url}")
-
-                  # Download the artifact
-                  artifact_response = requests.get(artifact_download_url, headers=headers, stream=True)
-                  with open('bottles.zip', 'wb') as artifact_file:
-                      for chunk in artifact_response.iter_content(chunk_size=8192):
-                          artifact_file.write(chunk)
-
-                  print("Artifact downloaded successfully.")
-              else:
-                  print("No artifacts found for the specified job.")
-
-      - name: Unzip artifact
-        run: unzip bottles.zip
-
-      - name: Apply bottle commit
-        run: brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew *.json
+          cd ${{ steps.pr-pull.outputs.bottle_path }}
+          unzip '*.zip' '*.json'
+          brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew *.json
 
       - name: Push bottle commit
         run: git push origin ${{ github.head_ref }}
