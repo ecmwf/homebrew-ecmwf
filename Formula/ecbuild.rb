@@ -1,8 +1,8 @@
 class Ecbuild < Formula
   desc "ECMWF macros for CMake build system"
   homepage "https://github.com/ecmwf/ecbuild"
-  url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.8.0.tar.gz"
-  sha256 "6fba30dae40a09ad0f14e16769e5df2b038024df8bbaca55adaddbb7fce49579"
+  url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.13.1.tar.gz"
+  sha256 "9759815aef22c9154589ea025056db086c575af9dac635614b561ab825f9477e"
   license "Apache-2.0"
 
   livecheck do
@@ -10,12 +10,12 @@ class Ecbuild < Formula
     regex(/^v?(\d(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://get-test.ecmwf.int/repository/homebrew"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "1ac3298fff255d4428cd0e315603bf10b1f856a6f264f643843158d329fe6882"
-    sha256 cellar: :any_skip_relocation, ventura:       "4d647030395ba5817b2be8918e4726792a478e926c8052e76ff6f3b059817ce9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d63291bcf24bcaaa4407c027485a1e9553b9d9ab45873ad1fba7c46a3a485d2a"
-  end
+  # bottle do
+  #   root_url "https://get-test.ecmwf.int/repository/homebrew"
+  #   sha256 cellar: :any_skip_relocation, arm64_ventura: "1ac3298fff255d4428cd0e315603bf10b1f856a6f264f643843158d329fe6882"
+  #   sha256 cellar: :any_skip_relocation, ventura:       "4d647030395ba5817b2be8918e4726792a478e926c8052e76ff6f3b059817ce9"
+  #   sha256 cellar: :any_skip_relocation, x86_64_linux:  "d63291bcf24bcaaa4407c027485a1e9553b9d9ab45873ad1fba7c46a3a485d2a"
+  # end
 
   depends_on "cmake"
 
