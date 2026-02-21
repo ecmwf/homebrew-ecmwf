@@ -1,8 +1,8 @@
 class Fdb < Formula
   desc "FDB (Fields DataBase) is a domain-specific object store for GRIB data"
   homepage "https://github.com/ecmwf/fdb"
-  url "https://github.com/ecmwf/fdb/archive/refs/tags/5.19.1.tar.gz"
-  sha256 "de5edddd4c17cb4ddfe61bfed60a6b37408d5ed92a2d19a493592e1abfe65a8d"
+  url "https://github.com/ecmwf/fdb/archive/refs/tags/5.17.3.tar.gz"
+  sha256 "b477f95a00bd0177e26490e0d0911679aba9183c53ac525625fe1665487068d0"
   license "Apache-2.0"
 
   livecheck do
@@ -19,6 +19,8 @@ class Fdb < Formula
 
   depends_on "cmake" => [:build, :test]
   depends_on "ecbuild" => [:build, :test]
+  depends_on "eckit"
+  depends_on "metkit"
   # depends_on "lapack"
   # depends_on "lz4"
   # depends_on "openblas"

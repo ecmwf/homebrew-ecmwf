@@ -1,8 +1,8 @@
 class Metkit < Formula
   desc "Metkit is a toolkit for manipulating and describing meteorological objects"
   homepage "https://github.com/ecmwf/metkit"
-  url "https://github.com/ecmwf/metkit/archive/refs/tags/1.16.2.tar.gz"
-  sha256 "30a65a2cc14942e7ce64ea5539a1b6b85ecce336811014aba70e1f4f9e651f68"
+  url "https://github.com/ecmwf/metkit/archive/refs/tags/1.13.1.tar.gz"
+  sha256 "690ca5134ce9c6f46936af0c4183a682f59c8df6fcb3e14c8a8b1dbb208a4da9"
   license "Apache-2.0"
 
   livecheck do
