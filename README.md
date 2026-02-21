@@ -16,7 +16,9 @@ brew tap jhardenberg/ecmwf
 brew install <formula>
 ```
 
-For fdb you will need to install ecbuild, exkti, metkit and fdb itself.
+For fdb you will need to install ecbuild, exkti, metkit and fdb itself (they should be pulled as dependencies).
+
+To install from sources you will need an updated version of XCode.
 
 ## Packages
 
