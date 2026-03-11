@@ -46,6 +46,7 @@ jobs:
         run: gh pr checkout "$PULL_REQUEST"
 
       - name: Pull bottles
+        id: pr-pull
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
@@ -54,18 +55,19 @@ jobs:
           brew pr-pull
           --debug
           --no-upload
-          --retain-bootle-dir
+          --retain-bottle-dir
           --clean
           --no-cherry-pick
           --workflows=tests.yml
           --tap="$GITHUB_REPOSITORY"
           --root-url="https://get-test.ecmwf.int/repository/homebrew"
-          "$PULL_REQUEST"
-          - name: Unzip artifacts and apply bottle commit
-          run: |
-            cd ${{ steps.pr-pull.outputs.bottle_path }}
-            unzip '*.zip' '*.json'
-            brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew *.json
+          -- "$PULL_REQUEST"
+
+      - name: Unzip artifacts and apply bottle commit
+        run: |
+          cd "${{ steps.pr-pull.outputs.bottle_path }}"
+          unzip '*.zip' '*.json'
+          brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew ./*.json
 
       - name: Push bottle commits to PR branch
         uses: Homebrew/actions/git-try-push@main
@@ -100,10 +102,10 @@ jobs:
           for file in *.bottle.tar.gz; do
             if [ -f "$file" ]; then
               echo "Uploading: $file"
-              response=$(curl -w "%{http_code}" --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" --upload-file $file https://get-test.ecmwf.int/repository/homebrew/$file)
-              
-              status=$(echo $response | tail -c 4)
-              if [ $status -eq 201 ] || [ $status -eq 200 ]; then
+              response=$(curl -w "%{http_code}" --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" --upload-file "$file" "https://get-test.ecmwf.int/repository/homebrew/$file")
+
+              status=$(echo "$response" | tail -c 4)
+              if [ "$status" -eq 201 ] || [ "$status" -eq 200 ]; then
                 echo "Successfully uploaded!"
               else
                 echo "$status: Upload failed"
