@@ -5,6 +5,11 @@ on:
     branches:
       - master
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
 
 permissions:
   actions: read
@@ -44,11 +49,11 @@ jobs:
 
   test-bot:
     needs: syntax
-    if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' }}
+    if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' && (github.event.pull_request.head.repo.fork == false || contains(github.event.pull_request.labels.*.name, 'approved-for-ci')) }}
     env:
       HOMEBREW_GH_REPO_READ_TOKEN: ${{ secrets.GH_REPO_READ_TOKEN }}
       HOMEBREW_BITBUCKET_PAT: ${{ secrets.BITBUCKET_PAT}}
-      HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
       GIT_TERMINAL_PROMPT: 0
       HOMEBREW_DEVELOPER: 1
       HOMEBREW_NO_INSTALL_FROM_API: 1
