@@ -6,7 +6,7 @@ class EcmwfToolbox < Formula
   url "https://github.com/recmanj/ecmwf-toolbox.git",
       tag:       "2026.01.0.0",
       using:     GitHubPrivateDownloadStrategy,
-      token_env: "HOMEBREW_HOMEBREW_GH_REPO_READ_TOKEN"
+      token_env: "HOMEBREW_GH_REPO_READ_TOKEN"
   license "Apache-2.0"
 
   depends_on "cmake" => :build
@@ -42,9 +42,11 @@ class EcmwfToolbox < Formula
   def install
     ENV.append("GIT_TERMINAL_PROMPT", "0")
     ENV.append("BITBUCKET", "https://git.ecmwf.int")
+
     # Write git credentials so ecbundle can clone private repos
-    gh_token = ENV["HOMEBREW_HOMEBREW_GH_REPO_READ_TOKEN"]
-    bb_token = ENV["HOMEBREW_ECMWF_BITBUCKET_TOKEN"]
+    gh_token = ENV["HOMEBREW_GH_REPO_READ_TOKEN"]
+    bb_token = ENV["HOMEBREW_BITBUCKET_PAT"]
+    secrets = [gh_token, bb_token].compact.reject(&:empty?)
 
     creds = []
     creds << "https://x-access-token:#{gh_token}@github.com" if gh_token
@@ -70,28 +72,45 @@ class EcmwfToolbox < Formula
       ENV.prepend_path "PATH", buildpath/"bin"
     end
 
-    # ecbundle create: downloads all git repos + generates CMakeLists.txt
-    system "ecbundle", "create", "--bundle", buildpath.to_s
+    # In CI, capture build output to a log file for upload to Nexus.
+    # HOMEBREW_ECMWF_BUILD_LOG must point to a sandbox-writable path (e.g. /tmp).
+    # Locally, stream sanitized output to stdout.
+    ci = ENV["CI"]
+    build_log_path = ENV["HOMEBREW_ECMWF_BUILD_LOG"]
 
-    # ecbundle build: cmake configure + compile + install
-    system "ecbundle", "build",
-           "--src-dir", "source",
-           "--build-dir", "build",
-           "--install-dir", prefix.to_s,
-           "--build-type", "Release",
-           "--without-tests",
-           "--cmake", "ENABLE_AEC=ON",
-           "--cmake", "ENABLE_FFTW=ON",
-           "--cmake", "ENABLE_NETCDF=ON",
-           "--cmake", "ENABLE_PROJ=ON",
-           "--cmake", "ENABLE_PNG=ON",
-           "--cmake", "ENABLE_FDB5=ON",
-           "--cmake", "ENABLE_CLANG_TIDY=OFF",
-           "--cmake", "INSTALL_LIB_DIR=lib",
-           "--cmake", "CMAKE_PREFIX_PATH=#{ENV["CMAKE_PREFIX_PATH"]}",
-           "--cmake", "OpenMP_ROOT=#{Formula["libomp"].opt_prefix}",
-           "--install",
-           "-j#{ENV.make_jobs}"
+    run_build = lambda do |output_io|
+      # ecbundle create: downloads all git repos + generates CMakeLists.txt
+      run_ecbundle(secrets, output_io, "ecbundle", "create", "--bundle", buildpath.to_s)
+
+      # ecbundle build: cmake configure + compile + install
+      run_ecbundle(secrets, output_io,
+                    "ecbundle", "build",
+                    "--src-dir", "source",
+                    "--build-dir", "build",
+                    "--install-dir", prefix.to_s,
+                    "--build-type", "Release",
+                    "--without-tests",
+                    "--cmake", "ENABLE_AEC=ON",
+                    "--cmake", "ENABLE_FFTW=ON",
+                    "--cmake", "ENABLE_NETCDF=ON",
+                    "--cmake", "ENABLE_PROJ=ON",
+                    "--cmake", "ENABLE_PNG=ON",
+                    "--cmake", "ENABLE_FDB5=ON",
+                    "--cmake", "ENABLE_CLANG_TIDY=OFF",
+                    "--cmake", "INSTALL_LIB_DIR=lib",
+                    "--cmake", "CMAKE_PREFIX_PATH=#{ENV["CMAKE_PREFIX_PATH"]}",
+                    "--cmake", "OpenMP_ROOT=#{Formula["libomp"].opt_prefix}",
+                    "--install",
+                    "-j#{ENV.make_jobs}")
+    end
+
+    if ci && build_log_path
+      File.open(build_log_path, "w") { |f| run_build.call(f) }
+    elsif ci
+      File.open(File::NULL, "w") { |f| run_build.call(f) }
+    else
+      run_build.call($stdout)
+    end
 
     # Fix shim references in pkg-config files and ecbuild config headers
     files_to_fix = Dir[lib/"pkgconfig/*.pc", include/"**/*_ecbuild_config.h"]
@@ -106,5 +125,19 @@ class EcmwfToolbox < Formula
 
   test do
     system bin/"codes_info"
+  end
+
+  private
+
+  def run_ecbundle(secrets, output_io, *cmd)
+    require "open3"
+    Open3.popen2e(*cmd) do |_stdin, out_err, wait_thr|
+      out_err.each_line do |line|
+        secrets.each { |s| line.gsub!(s, "[REDACTED]") }
+        output_io.print line
+      end
+      status = wait_thr.value
+      raise "#{cmd.first} failed with exit code #{status.exitstatus}" unless status.success?
+    end
   end
 end

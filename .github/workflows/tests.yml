@@ -52,7 +52,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' && (github.event.pull_request.head.repo.fork == false || contains(github.event.pull_request.labels.*.name, 'approved-for-ci')) }}
     env:
       HOMEBREW_GH_REPO_READ_TOKEN: ${{ secrets.GH_REPO_READ_TOKEN }}
-      HOMEBREW_BITBUCKET_PAT: ${{ secrets.BITBUCKET_PAT}}
+      HOMEBREW_BITBUCKET_PAT: ${{ secrets.BITBUCKET_PAT }}
       HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
       GIT_TERMINAL_PROMPT: 0
       HOMEBREW_DEVELOPER: 1
@@ -90,7 +90,29 @@ jobs:
       - run: brew test-bot --only-setup
 
       - name: Build bottles
-        run: brew test-bot --only-formulae --fail-fast --skip-online-checks --skip-new
+        env:
+          HOMEBREW_ECMWF_BUILD_LOG: /tmp/ecmwf-toolbox-build.log
+        run: >
+          brew test-bot --only-formulae --fail-fast --skip-online-checks --skip-new
+          --root-url https://get-test.ecmwf.int/repository/homebrew
+
+      - name: Upload ecmwf-toolbox build log to Nexus
+        if: always()
+        run: |
+          LOG_FILE="/tmp/ecmwf-toolbox-build.log"
+          if [ -f "$LOG_FILE" ]; then
+            LOG_NAME="build-${{ github.run_id }}-${{ matrix.runner }}.log"
+            response=$(curl -sf -w "%{http_code}" \
+              --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" \
+              --upload-file "$LOG_FILE" \
+              "https://get-test.ecmwf.int/repository/homebrew/build-logs/${{ github.run_id }}/$LOG_NAME")
+            status=$(echo "$response" | tail -c 4)
+            if [ "$status" -eq 201 ] || [ "$status" -eq 200 ]; then
+              echo "Build log uploaded: logs/$LOG_NAME"
+            else
+              echo "Warning: Failed to upload build log (HTTP $status)"
+            fi
+          fi
 
       - name: Upload bottles as artifact
         if: always()
