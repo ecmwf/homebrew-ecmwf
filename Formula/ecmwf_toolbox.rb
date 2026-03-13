@@ -2,8 +2,8 @@ require_relative "../lib/github_private_download_strategy"
 
 class EcmwfToolbox < Formula
   desc "ECMWF software bundle: ecCodes, Magics, Metview, Atlas, and more"
-  homepage "https://github.com/recmanj/ecmwf-toolbox"
-  url "https://github.com/recmanj/ecmwf-toolbox.git",
+  homepage "https://github.com/ecmwf/ecmwf-toolbox"
+  url "https://github.com/ecmwf/ecmwf-toolbox.git",
       tag:       "2026.01.0.0",
       using:     GitHubPrivateDownloadStrategy,
       token_env: "HOMEBREW_GH_REPO_READ_TOKEN"
