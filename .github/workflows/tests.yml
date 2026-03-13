@@ -94,7 +94,7 @@ jobs:
           HOMEBREW_ECMWF_BUILD_LOG: /tmp/ecmwf-toolbox-build.log
         run: >
           brew test-bot --only-formulae --fail-fast --skip-online-checks --skip-new
-          --root-url https://get-test.ecmwf.int/repository/homebrew
+        --root-url https://get-test.ecmwf.int/repository/homebrew # TODO: prod repo 
 
       - name: Upload ecmwf-toolbox build log to Nexus
         if: always()
@@ -105,7 +105,7 @@ jobs:
             response=$(curl -sf -w "%{http_code}" \
               --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" \
               --upload-file "$LOG_FILE" \
-              "https://get-test.ecmwf.int/repository/homebrew/build-logs/${{ github.run_id }}/$LOG_NAME")
+                                       "https://get-test.ecmwf.int/repository/homebrew/build-logs/${{ github.run_id }}/$LOG_NAME") # TODO: prod repo
             status=$(echo "$response" | tail -c 4)
             if [ "$status" -eq 201 ] || [ "$status" -eq 200 ]; then
               echo "Build log uploaded: logs/$LOG_NAME"
