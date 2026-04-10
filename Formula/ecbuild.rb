@@ -13,13 +13,13 @@ class Ecbuild < Formula
 
   bottle do
     root_url "https://get-test.ecmwf.int/repository/homebrew"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4913edc9a95bca9daf78264b733703e0ec086a1607f776dddced520feea0ea5b"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "26b59b014d44b3e2e9475646e4ed4e9fd86419ea6350f429a1b7188b4f7bba34"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8bb027f9e4be185140960207a8c5c6984bc500be70094c19449d576e676ae32c"
-    sha256 cellar: :any_skip_relocation, tahoe:         "16ed9966e1517974eea54290d154c5719a4a705cd9a10efede2f8de6265b03e4"
-    sha256 cellar: :any_skip_relocation, sequoia:       "947ebe5372b7e5076a74b74772810de0d7c97eeacec0db310f62421c217d10db"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "78ac6ebe73fc123b424b423b96be8dcdc27895827c905315428dc8ff1f3222dd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e1c17ee74709509b2e5359ef4e650f7ca08493c37a0ce48bf6e7ac7718539e5e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1acf1e9a4a0be0b64203ac2eaf2430c1d74713d900717e685acb41d6d0272699"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c7d45eed7a4808e47f0e004c10cff9ef8bd3302191e3a50ac227278b00913bc3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "55fd0334b2c00de1c360c66c7a294cc66aae14a0103ef1799bd2eb2e313cc02b"
+    sha256 cellar: :any_skip_relocation, tahoe:         "46f94f8f113718462a4940350271115662837ac948972ba7a692bdd7200f8fa8"
+    sha256 cellar: :any_skip_relocation, sequoia:       "a615ed23d9ec7f8238cb5fea9f12f06e74acae99b9b7dc6d06910562dd37ba6f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "3002520287b9e03aae7ce4e2a03f822889c8babc588f7438fbd580edcd4a371d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "11d7c8187fe0471d7f7373a5ef555b522c8e36c57edc4e5bc26cd97405bfb7a9"
   end
 
   depends_on "cmake"
