@@ -1,0 +1,16 @@
+name: Approve CI for forks
+
+on:
+  pull_request:
+    types:
+      - labeled
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  run-tests:
+    if: github.event.label.name == 'approved-for-ci'
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit # zizmor: ignore[secrets-inherit]
