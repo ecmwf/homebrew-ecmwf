@@ -1,76 +1,123 @@
-name: brew test-bot
+name: brew test-bot bottles
+
 on:
   push:
     branches:
       - master
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test-bot:
-    if: ${{ github.triggering_actor != 'github-actions[bot]' }}
-    strategy:
-      matrix:
-        name:
-          - ubuntu-latest
-          - macos-13-arm
-          - macos-13-x86
-        include:
-          - name: ubuntu-latest
-            labels: [ubuntu-latest]
-          - name: macos-13-arm
-            labels: [self-hosted, platform-builder-macosx-13.4.1-arm64]
-          - name: macos-13-x86
-            labels: [self-hosted, platform-builder-macosx-13.4.1-x86_64]
-    runs-on: ${{ matrix.labels }}
-    env:
-      HOMEBREW_NO_INSTALL_FROM_API: 1
+  syntax:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
     steps:
-      - name: Cleanup working directory
-        if: ${{ contains(matrix.labels, 'self-hosted') }}
-        run: rm -rf $GITHUB_WORKSPACE/*
-
-      - name: Checkout current branch
-        if: ${{ contains(matrix.labels, 'self-hosted') }}
-        run: |
-          cd $(brew --repository ecmwf/ecmwf)
-          git restore .
-          git fetch origin ${{ github.sha }} 
-          git checkout FETCH_HEAD
-
       - name: Set up Homebrew
-        if: ${{ !contains(matrix.labels, 'self-hosted') }}
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
 
       - name: Cache Homebrew Bundler RubyGems
-        if: ${{ !contains(matrix.labels, 'self-hosted') }}
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ${{ steps.set-up-homebrew.outputs.gems-path }}
-          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
-          restore-keys: ${{ runner.os }}-rubygems-
+          key: ${{ runner.os }}-${{ runner.arch }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-rubygems-
 
       - name: Install Homebrew Bundler RubyGems
-        if: ${{ !contains(matrix.labels, 'self-hosted') && steps.cache.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: brew install-bundler-gems
 
-      - name: Run homebrew cleanup
-        if: ${{ !contains(matrix.labels, 'self-hosted') }}
-        run: brew test-bot --only-cleanup-before
+      - run: brew test-bot --only-cleanup-before
 
-      - name: Run the local system setup check
-        run: brew test-bot --only-setup
+      - run: brew test-bot --only-setup
 
-      - name: Run syntax check
-        run: brew test-bot --only-tap-syntax
+      - run: brew test-bot --only-tap-syntax
+
+  test-bot:
+    permissions:
+      contents: read
+      pull-requests: read
+    needs: syntax
+    if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' && (github.event.pull_request.head.repo.fork == false || contains(github.event.pull_request.labels.*.name, 'approved-for-ci')) }}
+    env:
+      # HOMEBREW_GH_REPO_READ_TOKEN: ${{ secrets.GH_REPO_READ_TOKEN }}
+      # HOMEBREW_BITBUCKET_PAT: ${{ secrets.BITBUCKET_PAT }}
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+      GIT_TERMINAL_PROMPT: 0
+      HOMEBREW_DEVELOPER: 1
+      HOMEBREW_NO_INSTALL_FROM_API: 1
+    strategy:
+      matrix:
+        runner:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-14
+          - macos-15
+          - macos-26
+          - macos-15-intel
+          - macos-26-intel
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Cache Homebrew Bundler RubyGems
+        id: cache
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-rubygems-
+
+      - name: Install Homebrew Bundler RubyGems
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: brew install-bundler-gems
+
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
 
       - name: Build bottles
-        if: github.event_name == 'pull_request'
-        run: brew test-bot --only-formulae --fail-fast --skip-recursive-dependents --root-url=https://get-test.ecmwf.int/repository/homebrew
+        env:
+          HOMEBREW_ECMWF_BUILD_LOG: /tmp/ecmwf-toolbox-build.log
+        run: >
+          brew test-bot --only-formulae \
+            --fail-fast \
+            --skip-online-checks \
+            --root-url https://get-test.ecmwf.int/repository/homebrew # TODO: prod repo
+
+      - name: Upload ecmwf-toolbox build log to Nexus
+        if: always()
+        run: |
+          LOG_FILE="/tmp/ecmwf-toolbox-build.log"
+          if [ -f "$LOG_FILE" ]; then
+            LOG_NAME="build-${{ github.run_id }}-${{ matrix.runner }}.log"
+            response=$(curl -sf -w "%{http_code}" \
+              --user "${{ secrets.NEXUS_PUBLIC_TEST_REPO_UPLOAD_TOKEN }}" \
+              --upload-file "$LOG_FILE" \
+              "https://get-test.ecmwf.int/repository/homebrew/build-logs/${{ github.run_id }}/$LOG_NAME") # TODO: prod repo
+            status=$(echo "$response" | tail -c 4)
+            if [ "$status" -eq 201 ] || [ "$status" -eq 200 ]; then
+              echo "Build log uploaded: logs/$LOG_NAME"
+            else
+              echo "Warning: Failed to upload build log (HTTP $status)"
+            fi
+          fi
 
       - name: Upload bottles as artifact
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: bottles_${{ matrix.name }}
+          name: bottles_${{ matrix.runner }}
           path: "*.bottle.*"
