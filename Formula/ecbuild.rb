@@ -4,6 +4,7 @@ class Ecbuild < Formula
   url "https://github.com/ecmwf/ecbuild/archive/refs/tags/3.13.1.tar.gz"
   sha256 "9759815aef22c9154589ea025056db086c575af9dac635614b561ab825f9477e"
   license "Apache-2.0"
+  revision 1
 
   livecheck do
     url "https://github.com/ecmwf/ecbuild/tags"
