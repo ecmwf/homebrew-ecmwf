@@ -1,0 +1,8 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        "ecmwf/*": any
+        "Homebrew/*": any
+  secrets-outside-env:
+    disable: true
