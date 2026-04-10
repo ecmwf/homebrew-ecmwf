@@ -63,11 +63,8 @@ jobs:
           -- "$PULL_REQUEST"
 
       - name: Apply bottle commit
-        run: |
-          cd "${STEPS_PR_PULL_OUTPUTS_BOTTLE_PATH}"
-          brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew ./*.json
-        env:
-          STEPS_PR_PULL_OUTPUTS_BOTTLE_PATH: ${{ steps.pr-pull.outputs.bottle_path }}
+        working-directory: ${{ steps.pr-pull.outputs.bottle_path }}
+        run: brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew ./*.json
 
       - name: Push bottle commits to PR branch
         uses: Homebrew/actions/git-try-push@main
@@ -78,6 +75,7 @@ jobs:
         # brew creates bottles with a different name than what should be uploaded
         # when installing it's searching for file with the new name
       - name: Rename bottles
+        working-directory: ${{ steps.pr-pull.outputs.bottle_path }}
         shell: python
         run: |
           import os
@@ -98,6 +96,7 @@ jobs:
                 rename(data)
 
       - name: Upload bottles
+        working-directory: ${{ steps.pr-pull.outputs.bottle_path }}
         run: |
           for file in *.bottle.tar.gz; do
             if [ -f "$file" ]; then
