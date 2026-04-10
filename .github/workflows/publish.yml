@@ -1,8 +1,6 @@
 name: brew pr-pull
 on:
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
-    types:
-      - labeled
+  workflow_dispatch:
 
 jobs:
   pr-pull:
@@ -57,7 +55,7 @@ jobs:
           --retain-bottle-dir
           --clean
           --no-cherry-pick
-          --workflows=tests.yml
+          --workflows=tests.yml,approve-ci.yml
           --tap="$GITHUB_REPOSITORY"
           --root-url="https://get-test.ecmwf.int/repository/homebrew"
           -- "$PULL_REQUEST"
