@@ -62,10 +62,9 @@ jobs:
           --root-url="https://get-test.ecmwf.int/repository/homebrew"
           -- "$PULL_REQUEST"
 
-      - name: Unzip artifacts and apply bottle commit
+      - name: Apply bottle commit
         run: |
           cd "${STEPS_PR_PULL_OUTPUTS_BOTTLE_PATH}"
-          unzip '*.zip' '*.json'
           brew bottle --merge --write --debug --root-url=https://get-test.ecmwf.int/repository/homebrew ./*.json
         env:
           STEPS_PR_PULL_OUTPUTS_BOTTLE_PATH: ${{ steps.pr-pull.outputs.bottle_path }}
