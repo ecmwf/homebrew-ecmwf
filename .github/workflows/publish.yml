@@ -56,6 +56,7 @@ jobs:
           --clean
           --no-cherry-pick
           --workflows=tests.yml,approve-ci.yml
+          --ignore-missing-artifacts=approve-ci.yml
           --tap="$GITHUB_REPOSITORY"
           --root-url="https://get-test.ecmwf.int/repository/homebrew"
           -- "$PULL_REQUEST"
