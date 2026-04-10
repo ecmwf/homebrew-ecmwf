@@ -33,20 +33,7 @@ class Eckit < Formula
       system "make", "install"
     end
 
-    shim_references = [
-      lib/"pkgconfig/eckit_mpi.pc",
-      lib/"pkgconfig/eckit_cmd.pc",
-      lib/"pkgconfig/eckit_test_value_custom_params.pc",
-      lib/"pkgconfig/eckit_option.pc",
-      lib/"pkgconfig/eckit_maths.pc",
-      lib/"pkgconfig/eckit_web.pc",
-      lib/"pkgconfig/eckit_sql.pc",
-      lib/"pkgconfig/eckit.pc",
-      lib/"pkgconfig/eckit_linalg.pc",
-      lib/"pkgconfig/eckit_geometry.pc",
-      lib/"pkgconfig/eckit_distributed.pc",
-      include/"eckit/eckit_ecbuild_config.h",
-    ]
+    shim_references = Dir[lib/"pkgconfig/*.pc"] + [include/"eckit/eckit_ecbuild_config.h"]
     inreplace shim_references, Superenv.shims_path/ENV.cxx, ENV.cxx
     inreplace shim_references, Superenv.shims_path/ENV.cc, ENV.cc
   end
