@@ -94,6 +94,7 @@ jobs:
         run: >
           brew test-bot --only-formulae \
             --fail-fast \
+            --skip-dependents \
             --skip-online-checks \
             --root-url https://get-test.ecmwf.int/repository/homebrew # TODO: prod repo
 
