@@ -2,10 +2,10 @@ name: Zizmor
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths: [".github/**"]
   pull_request:
-    branches: [main]
+    branches: [master]
     paths: [".github/**"]
 
 permissions:
