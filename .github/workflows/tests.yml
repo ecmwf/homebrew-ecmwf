@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   syntax:
+    if: github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci'
     permissions:
       contents: read
     runs-on: ubuntu-latest
