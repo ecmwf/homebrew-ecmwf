@@ -9,7 +9,6 @@ on:
       - opened
       - synchronize
       - reopened
-  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -17,6 +16,7 @@ concurrency:
 
 jobs:
   syntax:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork == false
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
       contents: read
       pull-requests: read
     needs: syntax
-    if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' && (github.event.pull_request.head.repo.fork == false || contains(github.event.pull_request.labels.*.name, 'approved-for-ci')) }}
+    if: ${{ github.event_name == 'pull_request' && github.triggering_actor != 'github-actions[bot]' && github.event.pull_request.head.repo.fork == false }}
     env:
       # HOMEBREW_GH_REPO_READ_TOKEN: ${{ secrets.GH_REPO_READ_TOKEN }}
       # HOMEBREW_BITBUCKET_PAT: ${{ secrets.BITBUCKET_PAT }}
