@@ -1,8 +1,8 @@
 class Eckit < Formula
   desc "ECMWF cross-platform c++ toolkit"
   homepage "https://github.com/ecmwf/eckit"
-  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.24.4.tar.gz"
-  sha256 "b6129eb4f7b8532aa6905033e4cf7d09aadc8547c225780fea3db196e34e4671"
+  url "https://github.com/ecmwf/eckit/archive/refs/tags/1.26.2.tar.gz"
+  sha256 "bbafdf175ebe5dcbab9742a94daa809ee430d78c1d894d133c04a6956b47c3d0"
   license "Apache-2.0"
 
   livecheck do
@@ -34,6 +34,7 @@ class Eckit < Formula
     end
 
     shim_references = [
+      lib/"pkgconfig/eckit_codec.pc",
       lib/"pkgconfig/eckit_mpi.pc",
       lib/"pkgconfig/eckit_cmd.pc",
       lib/"pkgconfig/eckit_test_value_custom_params.pc",
